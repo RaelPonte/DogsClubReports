@@ -12,17 +12,25 @@ def extract_form_data():
     dados = {}
 
     # Informações básicas
-    dados["nome_petshop"] = st.session_state.get("nome_petshop")
+    # Nome do usuário
+    dados["nome"] = st.session_state.get("nome", "")
+    if not dados["nome"] or dados["nome"].strip() == "":
+        dados["nome"] = st.session_state.get("nome_salvo", "")
 
+    # Nome do petshop
+    dados["nome_petshop"] = st.session_state.get("nome_petshop", "")
+    if not dados["nome_petshop"] or dados["nome_petshop"].strip() == "":
+        dados["nome_petshop"] = st.session_state.get("nome_petshop_salvo", "")
+
+    # Email
     dados["email_contato"] = st.session_state.get("email_contato", "")
     if not dados["email_contato"] or dados["email_contato"].strip() == "":
         dados["email_contato"] = st.session_state.get("email_salvo", "")
 
-    # Assegurar que email_contato não seja vazio
-    if not dados["email_contato"] or str(dados["email_contato"]).strip() == "":
-        raise ValueError("Email de contato não pode ser vazio")
-
-    dados["telefone_contato"] = st.session_state.get("telefone_contato")
+    # Telefone
+    dados["telefone_contato"] = st.session_state.get("telefone_contato", "")
+    if not dados["telefone_contato"] or dados["telefone_contato"].strip() == "":
+        dados["telefone_contato"] = st.session_state.get("telefone_salvo", "")
 
     # Operação
     dados["horario_abertura"] = st.session_state.get("horario_abertura", "08:00")

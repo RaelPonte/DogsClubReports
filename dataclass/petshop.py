@@ -7,6 +7,7 @@ class PetshopData(BaseModel):
     """Modelo para os dados do petshop"""
 
     # Informações Básicas
+    nome: Optional[str] = Field(description="Nome completo do usuário", default=None)
     nome_petshop: str = Field(description="Nome do Petshop")
     email_contato: Optional[str] = Field(description="E-mail de contato", default=None)
     telefone_contato: Optional[str] = Field(

@@ -41,13 +41,21 @@ def handle_export_pdf(dados, resultado):
             if not email or email.strip() == "":
                 raise ValueError("Email de contato não pode ser vazio")
 
-            # Enviar email com PDF anexado
-            email_result = email_handler.send_pdf_report(
-                nome=(
+            # Usar o nome do usuário se disponível, caso contrário usar o nome do petshop
+            nome_usuario = ""
+            if hasattr(dados, "nome") and dados.nome:
+                nome_usuario = dados.nome
+            else:
+                # Fallback para o nome do petshop como antes
+                nome_usuario = (
                     dados.nome_petshop.split()[0]
                     if " " in dados.nome_petshop
                     else dados.nome_petshop
-                ),
+                )
+
+            # Enviar email com PDF anexado
+            email_result = email_handler.send_pdf_report(
+                nome=nome_usuario,
                 email=email,
                 petshop_name=dados.nome_petshop,
                 faturamento_nao_realizado=resultado.faturamento_nao_realizado,
@@ -67,7 +75,7 @@ def handle_export_pdf(dados, resultado):
         st.error(f"Erro ao gerar ou enviar o PDF: {str(e)}")
 
 
-def create_pdf_email_button(dados, resultado, key_suffix, col_widths=[2, 1, 2]):
+def create_pdf_email_button(dados, resultado, key_suffix, col_widths=[2, 3, 2]):
     """
     Função para criar o botão de envio de PDF por email.
 
@@ -75,7 +83,7 @@ def create_pdf_email_button(dados, resultado, key_suffix, col_widths=[2, 1, 2]):
         dados: Dados do petshop
         resultado: Resultados da análise
         key_suffix: Sufixo para a chave do botão (top ou bottom)
-        col_widths: Lista com as proporções das colunas (padrão [2, 1, 2])
+        col_widths: Lista com as proporções das colunas
     """
     col1, col2, col3 = st.columns(col_widths)
     with col2:
@@ -196,7 +204,7 @@ def show_results(dados, resultado):
             </div>
             
             <p style="text-align: center; margin-top: 15px; font-weight: 500;">
-            Veja as <span style="color: #2ecc71;">recomendações práticas</span> abaixo para reverter esta situação.
+            Veja as <span style="color: #0a8a40;">recomendações práticas</span> abaixo para reverter esta situação.
             </p>
         </div>
         """
@@ -227,69 +235,262 @@ def show_results(dados, resultado):
     # Botão de exportar PDF em destaque (no topo)
     col1, col2, col3 = st.columns([1, 2, 1])
 
+    # Vamos adicionar um estilo CSS específico para o layout de tabela
+    st.markdown(
+        """
+    <style>
+        /* Estilo de tabela com linhas alternadas para as seções de análise */
+        .table-container {
+            border-collapse: collapse;
+            width: 100%;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .table-header {
+            padding: 15px;
+            font-weight: 600;
+            color: #fff;
+            text-align: center;
+            font-size: 18px;
+        }
+        
+        .table-row {
+            display: flex;
+            flex-wrap: wrap;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .table-row:last-child {
+            border-bottom: none;
+        }
+        
+        .table-cell {
+            flex: 1;
+            min-width: 300px;
+            padding: 15px;
+        }
+        
+        /* Cores específicas para cada tipo de tabela */
+        .inefficiencies-header { background-color: #e74c3c; }
+        .inefficiencies-row:nth-child(odd) { background-color: #fff0f0; }
+        .inefficiencies-row:nth-child(even) { background-color: #fff8f8; }
+        
+        .recommendations-header { background-color: #0a8a40; }
+        .recommendations-row:nth-child(odd) { background-color: #e8f8e8; }
+        .recommendations-row:nth-child(even) { background-color: #f0fff4; }
+        
+        .priorities-header { background-color: #0a8a40; }
+        .priorities-row:nth-child(odd) { background-color: #e8f8e8; }
+        .priorities-row:nth-child(even) { background-color: #f0fff4; }
+        
+        .goals-header { background-color: #3498db; }
+        .goals-row:nth-child(odd) { background-color: #e3f2fd; }
+        .goals-row:nth-child(even) { background-color: #ebf5fb; }
+    </style>
+    """,
+        unsafe_allow_html=True,
+    )
+
     # Relatório com recomendações
     st.markdown(
-        "<div class='section-header'>Análise e Recomendações</div>",
+        """
+        <h2 style="color: #2c3e50; font-size: 26px; margin: 40px 0 25px 0; 
+                  text-align: center; font-weight: 700; position: relative; padding-bottom: 12px;">
+            Análise e Recomendações
+            <span style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); 
+                   width: 100px; height: 4px; background-color: #3498db;"></span>
+        </h2>
+        """,
         unsafe_allow_html=True,
     )
 
     relatorio = prepare_financial_report(dados, resultado)
 
     # Saúde Financeira com suporte a HTML
-    st.markdown("### 💼 Saúde Financeira Atual")
-    st.markdown(relatorio["saude_financeira"], unsafe_allow_html=True)
-
-    # Ineficiências com emojis e cores (mantendo vermelho para ineficiências)
-    st.markdown("### 🚨 Principais Ineficiências")
-    for i, ineficiencia in enumerate(relatorio["ineficiencias"]):
-        st.markdown(
-            f"<h4 style='color: #e74c3c;'>🔴 {i+1}. {ineficiencia['titulo']}</h4>",
-            unsafe_allow_html=True,
-        )
-        st.markdown(ineficiencia["descricao"], unsafe_allow_html=True)
-
-    # Recomendações com emojis, cores e suporte a HTML
     st.markdown(
-        "### 💡 <span style='color: #2ecc71;'>Recomendações Práticas</span>",
+        """
+        <h3 style="color: #3498db; font-size: 22px; margin: 35px 0 20px 0; 
+                  position: relative; text-align: left; padding-left: 15px; font-weight: 600;">
+            <span style="position: relative; display: inline-block;">
+                💼 Saúde Financeira Atual
+                <span style="position: absolute; bottom: -8px; left: 0; width: 100%; height: 3px; background-color: #3498db;"></span>
+            </span>
+        </h3>
+        """,
         unsafe_allow_html=True,
     )
+
+    # Card moderno para a Saúde Financeira
+    saude_financeira_conteudo = (
+        relatorio["saude_financeira"].replace("</div>", "").strip()
+    )
+
+    st.markdown(
+        f"""
+    <div style="background-color: #f8fafc; border-radius: 8px; 
+                border-left: 4px solid #3498db; padding: 20px; margin-bottom: 30px; 
+                box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+        {saude_financeira_conteudo}
+    </div>
+    """,
+        unsafe_allow_html=True,
+    )
+
+    # Novo layout tipo tabela para Ineficiências
+    st.markdown(
+        """
+        <h3 style="color: #e74c3c; font-size: 22px; margin: 35px 0 20px 0; 
+                  position: relative; text-align: left; padding-left: 15px; font-weight: 600;">
+            <span style="position: relative; display: inline-block; color: #e74c3c;">
+                🚨 Principais Ineficiências
+                <span style="position: absolute; bottom: -8px; left: 0; width: 100%; height: 3px; background-color: #e74c3c;"></span>
+            </span>
+        </h3>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.markdown(
+        """
+    <div class="table-container" style="border-radius: 8px; margin-top: 10px;">
+    """,
+        unsafe_allow_html=True,
+    )
+
+    for i, ineficiencia in enumerate(relatorio["ineficiencias"]):
+        st.markdown(
+            f"""
+        <div class="table-row inefficiencies-row">
+            <div class="table-cell">
+                <h5 style="color: #e74c3c; margin-top: 0;">🔴 {i+1}. {ineficiencia['titulo']}</h5>
+                <p style="margin-bottom: 0;">{ineficiencia['descricao']}</p>
+            </div>
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+    st.markdown("</div>", unsafe_allow_html=True)
+
+    # Novo layout tipo tabela para Recomendações
+    st.markdown(
+        """
+        <h3 style="color: #0a8a40; font-size: 22px; margin: 35px 0 20px 0; 
+                  position: relative; text-align: left; padding-left: 15px; font-weight: 600;">
+            <span style="position: relative; display: inline-block; color: #0a8a40">
+                💡 Recomendações Práticas
+                <span style="position: absolute; bottom: -8px; left: 0; width: 100%; height: 3px; background-color: #0a8a40;"></span>
+            </span>
+        </h3>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.markdown(
+        """
+    <div class="table-container" style="border-radius: 8px; margin-top: 10px;">
+    """,
+        unsafe_allow_html=True,
+    )
+
     for i, recomendacao in enumerate(relatorio["recomendacoes"]):
         st.markdown(
-            f"<h4 style='color: #2ecc71;'>✅ {i+1}. {recomendacao['titulo']}</h4>",
+            f"""
+        <div class="table-row recommendations-row">
+            <div class="table-cell">
+                <h5 style="color: #0a8a40; margin-top: 0;">✅ {i+1}. {recomendacao['titulo']}</h5>
+                <p>{recomendacao['descricao']}</p>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px;">
+                    <div style="background-color: rgba(46, 204, 113, 0.15); padding: 8px 12px; border-radius: 20px;">
+                        <span style="font-weight: bold; color: #27ae60;">💰 Impacto:</span> {recomendacao['impacto']}
+                    </div>
+                    <div style="background-color: rgba(52, 152, 219, 0.15); padding: 8px 12px; border-radius: 20px;">
+                        <span style="font-weight: bold; color: #2980b9;">⏱️ Prazo:</span> {recomendacao['prazo']}
+                    </div>
+                </div>
+            </div>
+        </div>
+        """,
             unsafe_allow_html=True,
         )
-        st.markdown(recomendacao["descricao"], unsafe_allow_html=True)
 
-        # Usar HTML para formatação de negrito
-        st.markdown(
-            f"<p><span style='font-weight: bold; color: #27ae60;'>💰 Impacto estimado:</span> {recomendacao['impacto']}</p>",
-            unsafe_allow_html=True,
-        )
-        st.markdown(
-            f"<p><span style='font-weight: bold; color: #2980b9;'>⏱️ Prazo sugerido:</span> {recomendacao['prazo']}</p>",
-            unsafe_allow_html=True,
-        )
-        st.markdown(
-            "<hr style='margin: 15px 0; opacity: 0.3;'>", unsafe_allow_html=True
-        )
+    st.markdown("</div>", unsafe_allow_html=True)
 
-    # Prioridades com emojis e cores
-    st.markdown("### 🎯 Prioridades de Curto Prazo")
+    # Novo layout tipo tabela para Prioridades
+    st.markdown(
+        """
+        <h3 style="color: #0a8a40; font-size: 22px; margin: 35px 0 20px 0; 
+                  position: relative; text-align: left; padding-left: 15px; font-weight: 600;">
+            <span style="position: relative; display: inline-block; color: #0a8a40">
+                🎯 Prioridades de Curto Prazo
+                <span style="position: absolute; bottom: -8px; left: 0; width: 100%; height: 3px; background-color: #0a8a40;"></span>
+            </span>
+        </h3>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.markdown(
+        """
+    <div class="table-container" style="border-radius: 8px; margin-top: 10px;">
+    """,
+        unsafe_allow_html=True,
+    )
+
     for i, prioridade in enumerate(relatorio["prioridades"]):
         st.markdown(
-            f"<h4 style='color: #f39c12;'>⚡ {i+1}. {prioridade['titulo']}</h4>",
+            f"""
+        <div class="table-row priorities-row">
+            <div class="table-cell">
+                <h5 style="color: #0a8a40; margin-top: 0;">⚡ {i+1}. {prioridade['titulo']}</h5>
+                <p style="margin-bottom: 0;">{prioridade['descricao']}</p>
+            </div>
+        </div>
+        """,
             unsafe_allow_html=True,
         )
-        st.markdown(prioridade["descricao"], unsafe_allow_html=True)
 
-    # Metas com emojis e cores
-    st.markdown("### 📈 Metas Sugeridas")
+    st.markdown("</div>", unsafe_allow_html=True)
+
+    # Novo layout tipo tabela para Metas
+    st.markdown(
+        """
+        <h3 style="color: #3498db; font-size: 22px; margin: 35px 0 20px 0; 
+                  position: relative; text-align: left; padding-left: 15px; font-weight: 600;">
+            <span style="position: relative; display: inline-block;">
+                📈 Metas Sugeridas
+                <span style="position: absolute; bottom: -8px; left: 0; width: 100%; height: 3px; background-color: #3498db;"></span>
+            </span>
+        </h3>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.markdown(
+        """
+    <div class="table-container" style="border-radius: 8px; margin-top: 10px;">
+    """,
+        unsafe_allow_html=True,
+    )
+
     for i, meta in enumerate(relatorio["metas"]):
         st.markdown(
-            f"<h4 style='color: #3498db;'>🏆 {i+1}. {meta['titulo']}</h4>",
+            f"""
+        <div class="table-row goals-row">
+            <div class="table-cell">
+                <h5 style="color: #3498db; margin-top: 0;">🏆 {i+1}. {meta['titulo']}</h5>
+                <p style="margin-bottom: 0;">{meta['descricao']}</p>
+            </div>
+        </div>
+        """,
             unsafe_allow_html=True,
         )
-        st.markdown(meta["descricao"], unsafe_allow_html=True)
+
+    st.markdown("</div>", unsafe_allow_html=True)
 
     # Removido a seção "Exportar Relatório" e adicionado o botão no footer
     st.markdown("<br><br>", unsafe_allow_html=True)
@@ -352,7 +553,7 @@ def show_results(dados, resultado):
         <h3 style="color: #2980b9; margin-top: 0;">💼 Consultoria Especializada Dog's Club</h3>
         <div style="display: flex; gap: 20px; margin: 15px 0; flex-wrap: wrap;">
             <div style="flex: 1; min-width: 200px;">
-                <h4 style="color: #2c3e50; margin-top: 0;">✅ O que oferecemos:</h4>
+                <h5 style="color: #2c3e50; margin-top: 0;">✅ O que oferecemos:</h5>
                 <ul style="padding-left: 20px; margin-top: 10px;">
                     <li>Implementação das recomendações personalizadas</li>
                     <li>Treinamento da sua equipe para maximizar resultados</li>
@@ -361,7 +562,7 @@ def show_results(dados, resultado):
                 </ul>
             </div>
             <div style="flex: 1; min-width: 200px;">
-                <h4 style="color: #2c3e50; margin-top: 0;">💰 Resultados esperados:</h4>
+                <h5 style="color: #2c3e50; margin-top: 0;">💰 Resultados esperados:</h5>
                 <ul style="padding-left: 20px; margin-top: 10px;">
                     <li>Aumento do faturamento em até 30%</li>
                     <li>Melhoria da taxa de ocupação</li>
@@ -395,22 +596,24 @@ def show_results(dados, resultado):
         if st.button("💬 Solicitar Contato", type="primary", use_container_width=True):
             # Se tivermos os dados do cliente
             if hasattr(dados, "nome_petshop") and hasattr(dados, "email_contato"):
-                nome = (
-                    dados.nome_petshop.split()[0]
-                    if " " in dados.nome_petshop
-                    else dados.nome_petshop
-                )
+                # Usar o nome do usuário se disponível, caso contrário usar o nome do petshop
+                nome_usuario = ""
+                if hasattr(dados, "nome") and dados.nome:
+                    nome_usuario = dados.nome
+                else:
+                    # Fallback para o nome do petshop como antes
+                    nome_usuario = (
+                        dados.nome_petshop.split()[0]
+                        if " " in dados.nome_petshop
+                        else dados.nome_petshop
+                    )
+
                 email = dados.email_contato
                 telefone = getattr(dados, "telefone_contato", "")
                 mensagem = st.session_state.get("contato_mensagem", "")
 
-                # Criar lead no DynamoDB
-                print("DADOS DO CLIENTE", dados)
-                print(f"Email: '{email}', Tipo: {type(email)}")
-                print(f"Nome: '{nome}', Telefone: '{telefone}'")
-
                 lead_handler.create_lead(
-                    name=nome,
+                    name=nome_usuario,
                     email=email,
                     whatsapp=telefone,
                     petshop_name=dados.nome_petshop,
@@ -420,7 +623,7 @@ def show_results(dados, resultado):
 
                 # Enviar email de confirmação para o cliente
                 email_handler.send_contact_confirmation(
-                    nome=nome,
+                    nome=nome_usuario,
                     email=email,
                     petshop_name=dados.nome_petshop,
                     mensagem=mensagem,
@@ -429,7 +632,7 @@ def show_results(dados, resultado):
                 # Enviar notificação interna para a equipe
                 internal_recipients = os.getenv("DOGS_CLUB_INTERNAL_EMAILS").split(",")
                 email_handler.send_internal_notification(
-                    nome=nome,
+                    nome=nome_usuario,
                     email=email,
                     whatsapp=telefone,
                     petshop_name=dados.nome_petshop,

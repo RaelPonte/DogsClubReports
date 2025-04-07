@@ -56,6 +56,27 @@ def on_email_change():
     print(f"Email salvo: {st.session_state['email_salvo']}")
 
 
+def on_nome_change():
+    """Função callback para garantir que o nome seja salvo"""
+    st.session_state["nome_salvo"] = st.session_state.get("nome", "")
+    # Também registrar no log para depuração
+    print(f"Nome salvo: {st.session_state['nome_salvo']}")
+
+
+def on_nome_petshop_change():
+    """Função callback para garantir que o nome do petshop seja salvo"""
+    st.session_state["nome_petshop_salvo"] = st.session_state.get("nome_petshop", "")
+    # Também registrar no log para depuração
+    print(f"Nome do petshop salvo: {st.session_state['nome_petshop_salvo']}")
+
+
+def on_telefone_change():
+    """Função callback para garantir que o telefone seja salvo"""
+    st.session_state["telefone_salvo"] = st.session_state.get("telefone_contato", "")
+    # Também registrar no log para depuração
+    print(f"Telefone salvo: {st.session_state['telefone_salvo']}")
+
+
 # Função para validar formato de hora
 def validar_formato_hora(hora):
     if not hora or not hora.strip():
@@ -76,6 +97,7 @@ def create_header():
             <h3 style="margin-top: 0; color: #3498db;">📊 Analise o desempenho do seu Petshop</h3>
             <p>Este formulário possui <b>5 etapas</b> com perguntas sobre seu petshop. Ao final, clique no botão <b>Analisar Dados</b> para receber um relatório completo.</p>
             <p><b>⏱️ Tempo de preenchimento:</b> 5 minutos</p>
+            <p><small>* Campos marcados com asterisco são obrigatórios</small></p>
         </div>
         """,
         unsafe_allow_html=True,
@@ -99,38 +121,58 @@ def step_1_basic_info():
     st.markdown("### 📝 Etapa 1: Informações Básicas")
     st.markdown("Preencha os dados de identificação do seu petshop.")
 
-    # Recuperar valor da sessão, se existir
-    nome_petshop_valor = st.session_state.get("nome_petshop", "Petshop Feliz")
+    # Recuperar valor salvo do nome, se existir
+    if "nome_salvo" not in st.session_state:
+        st.session_state["nome_salvo"] = st.session_state.get("nome", "")
+
+    # Campo para nome completo - adicionando indicador visual de campo obrigatório
     st.text_input(
-        "Nome do Petshop",
-        value=nome_petshop_valor,
+        "Seu Nome Completo *",  # Asterisco para indicar que é obrigatório
+        key="nome",
+        help="Seu nome completo para contato (obrigatório)",
+        on_change=on_nome_change,
+    )
+
+    # Recuperar valor salvo, se existir
+    if "nome_petshop_salvo" not in st.session_state:
+        st.session_state["nome_petshop_salvo"] = st.session_state.get(
+            "nome_petshop", ""
+        )
+
+    # Usar apenas o valor da sessão sem definir valor padrão no text_input
+    st.text_input(
+        "Nome do Petshop *",  # Asterisco para indicar que é obrigatório
         key="nome_petshop",
-        help="Nome comercial do seu estabelecimento",
+        help="Nome comercial do seu estabelecimento (obrigatório)",
+        on_change=on_nome_petshop_change,
     )
 
     col1, col2 = st.columns(2)
     with col1:
-        # Recuperar valor da sessão, se existir
+        # Recuperar valor da sessão salvo, se existir
         if "email_salvo" not in st.session_state:
             st.session_state["email_salvo"] = st.session_state.get("email_contato", "")
 
-        email_contato_valor = st.session_state.get("email_contato", "")
-        # Simples campo de email sem manipulações complexas
+        # Usar apenas a chave, sem valor padrão
         st.text_input(
-            "Email de Contato",
-            value=email_contato_valor,
+            "Email de Contato *",  # Asterisco para indicar que é obrigatório
             key="email_contato",
-            help="Email principal para contato",
+            help="Email principal para contato (obrigatório)",
             on_change=on_email_change,
         )
     with col2:
-        # Recuperar valor da sessão, se existir
-        telefone_contato_valor = st.session_state.get("telefone_contato", "")
+        # Recuperar valor da sessão salvo, se existir
+        if "telefone_salvo" not in st.session_state:
+            st.session_state["telefone_salvo"] = st.session_state.get(
+                "telefone_contato", ""
+            )
+
+        # Usar apenas a chave, sem valor padrão
         st.text_input(
             "Telefone",
-            value=telefone_contato_valor,
             key="telefone_contato",
             help="Número de telefone com DDD",
+            on_change=on_telefone_change,
         )
 
     st.markdown("</div>", unsafe_allow_html=True)
@@ -371,6 +413,28 @@ def navigation_buttons(step):
     with col2:
         if step < 5:
             if st.button("Próximo →", key=f"next_{step}", type="primary"):
+                # Validar os campos obrigatórios da etapa atual
+                if step == 1:
+                    # Verificar nome completo
+                    nome = st.session_state.get(
+                        "nome", st.session_state.get("nome_salvo", "")
+                    )
+                    if not nome or nome.strip() == "":
+                        st.error(
+                            "O campo 'Seu Nome Completo' é obrigatório. Por favor, preencha-o antes de prosseguir."
+                        )
+                        return
+
+                    # Verificar nome do petshop
+                    nome_petshop = st.session_state.get(
+                        "nome_petshop", st.session_state.get("nome_petshop_salvo", "")
+                    )
+                    if not nome_petshop or nome_petshop.strip() == "":
+                        st.error(
+                            "O campo 'Nome do Petshop' é obrigatório. Por favor, preencha-o antes de prosseguir."
+                        )
+                        return
+
                 # Os dados já estão automaticamente salvos em session_state pelo Streamlit
                 # quando os widgets são criados com a opção "key"
                 st.session_state["current_step"] = step + 1
@@ -378,13 +442,27 @@ def navigation_buttons(step):
         else:
             if st.button("📊 Analisar Dados", key="submit", type="primary"):
                 with st.spinner("Analisando dados do petshop..."):
-                    email = st.session_state.get(
-                        "email_contato", st.session_state.get("email_salvo", "")
-                    )
+                    email = st.session_state.get("email_salvo", "")
                     if not email or email.strip() == "":
                         st.error(
                             "O campo de Email de Contato é obrigatório. Por favor, volte à Etapa 1 e preencha o email."
                         )
+                        return
+
+                    nome = st.session_state.get("nome_salvo", "")
+                    if not nome or nome.strip() == "":
+                        st.error(
+                            "O campo 'Seu Nome Completo' é obrigatório. Por favor, volte à Etapa 1 e preencha seu nome."
+                        )
+                        return
+
+                    nome_petshop = st.session_state.get("nome_petshop_salvo", "")
+                    if not nome_petshop or nome_petshop.strip() == "":
+                        st.error(
+                            "O campo 'Nome do Petshop' é obrigatório. Por favor, volte à Etapa 1 e preencha o nome do seu petshop."
+                        )
+                        return
+
                     # Verificar e garantir que os dados estão válidos antes de processar
                     if (
                         "horario_abertura" not in st.session_state
@@ -508,12 +586,22 @@ def main():
 
     # Inicializar todos os campos do formulário que serão necessários em todas as etapas
     # Etapa 1: Informações Básicas
+    if "nome" not in st.session_state:
+        st.session_state["nome"] = ""
+    if "nome_salvo" not in st.session_state:
+        st.session_state["nome_salvo"] = ""
     if "nome_petshop" not in st.session_state:
-        st.session_state["nome_petshop"] = "Petshop Feliz"
+        st.session_state["nome_petshop"] = ""
+    if "nome_petshop_salvo" not in st.session_state:
+        st.session_state["nome_petshop_salvo"] = ""
     if "email_contato" not in st.session_state:
         st.session_state["email_contato"] = ""
+    if "email_salvo" not in st.session_state:
+        st.session_state["email_salvo"] = ""
     if "telefone_contato" not in st.session_state:
         st.session_state["telefone_contato"] = ""
+    if "telefone_salvo" not in st.session_state:
+        st.session_state["telefone_salvo"] = ""
 
     # Etapa 2: Operação
     if "horario_abertura" not in st.session_state:

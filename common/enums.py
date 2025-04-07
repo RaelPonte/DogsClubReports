@@ -1,10 +1,10 @@
-from enum import Enum, auto
+from enum import Enum
 
 
 class EmailContentType(Enum):
-    TEXT = "text"
-    HTML = "html"
-    BOTH = "both"
+    TEXT = "Text"
+    HTML = "Html"
+    BOTH = "Both"
 
 
 class EmailPriority(Enum):

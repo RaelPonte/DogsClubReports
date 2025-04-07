@@ -86,7 +86,6 @@ class EmailHandler:
                 body=email_content,
                 cc=cc_emails,
                 content_type=EmailContentType.HTML,
-                # Adicionar o PDF como anexo
                 attachments=[
                     {
                         "name": file_name,
@@ -202,22 +201,23 @@ class EmailHandler:
                 "%d/%m/%Y às %H:%M"
             )
 
-            # Criar conteúdo HTML para o email interno
-            html_content = f"""
-            <h2>Novo Lead Recebido</h2>
-            <p><strong>Nome:</strong> {nome}</p>
-            <p><strong>Email:</strong> {email}</p>
-            <p><strong>WhatsApp:</strong> {whatsapp}</p>
-            <p><strong>Petshop:</strong> {petshop_name}</p>
-            <p><strong>Fonte:</strong> {fonte}</p>
-            <p><strong>Data:</strong> {formatted_date}</p>
-            <p><strong>Timestamp:</strong> {current_timestamp}</p>
-            <p><strong>Mensagem:</strong></p>
-            <p style="background-color: #f5f5f5; padding: 10px; border-left: 3px solid #3498db;">
-                {mensagem}
-            </p>
-            """
+            # Carregar o template de email para notificação interna
+            print("Carregando template de email para notificação interna")
+            template = load_template("new_lead_notification")
 
+            # Substituir variáveis no template
+            variables = {
+                "nome": nome,
+                "email": email,
+                "whatsapp": whatsapp,
+                "petshop_name": petshop_name,
+                "fonte": fonte,
+                "data": formatted_date,
+                "timestamp": str(current_timestamp),
+                "mensagem": mensagem,
+            }
+
+            html_content = replace_template_variables(template, variables)
             # Preparar o assunto do email
             subject = f"[NOVO LEAD] {nome} - {petshop_name}"
 
@@ -238,4 +238,6 @@ class EmailHandler:
             }
 
         except Exception as e:
+            print("ERRO AO ENVIAR EMAIL INTERNO")
+            print("ERROR: ", e)
             return {"success": False, "error": str(e), "timestamp": int(time.time())}

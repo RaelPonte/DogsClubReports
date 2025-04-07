@@ -80,6 +80,7 @@ def define_css():
         .stProgress > div > div {
             background-color: #3498db;
         }
+        /* Estilização para todos os botões (padrão) */
         .stButton > button {
             width: 100%;
             border-radius: 6px;
@@ -87,10 +88,13 @@ def define_css():
             padding: 0.5rem 1rem;
             transition: all 0.3s ease;
             border: none;
+            background-color: #3498db;
+            color: white;
         }
         .stButton > button:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background-color: #2980b9;
         }
         /* Estilização para botões primários em azul */
         .stButton > button[kind="primary"] {
@@ -100,16 +104,16 @@ def define_css():
         .stButton > button[kind="primary"]:hover {
             background-color: #2980b9;
         }
-        /* Estilização para botões secundários */
+        /* Estilização para botões secundários - agora também azuis com texto branco */
         .stButton > button[kind="secondary"] {
-            color: #3498db;
-            border-color: #3498db;
-            background-color: white;
+            background-color: #3498db;
+            color: white;
+            border: 1px solid #2980b9;
         }
         .stButton > button[kind="secondary"]:hover {
-            background-color: rgba(52, 152, 219, 0.1);
+            background-color: #2980b9;
         }
-        /* Estilização de sliders */
+        /* Estilização aprimorada de sliders */
         .stSlider [data-baseweb="slider"] div div div div {
             background-color: #3498db;
         }
@@ -120,12 +124,65 @@ def define_css():
             background-color: #3498db;
             border-color: #3498db;
         }
+        /* Melhorias para os sliders */
+        .stSlider [data-baseweb="slider"] {
+            height: 8px;
+        }
+        .stSlider [data-baseweb="slider"] [role="slider"] {
+            width: 18px;
+            height: 18px;
+            top: -5px;
+        }
+        /* Cor do texto do slider e números */
+        .stSlider label, .stSlider p, .stSlider span {
+            color: #3498db !important;
+        }
+        /* Ajustar valores mínimo/máximo para evitar sobreposição com botões */
+        .stSlider [data-baseweb="slider"] [data-testid="stTickBarMin"],
+        .stSlider [data-baseweb="slider"] [data-testid="stTickBarMax"] {
+            color: #3498db !important;
+        }
+        /* Adicionar margem inferior nos sliders para evitar sobreposição com botões */
+        .stSlider {
+            margin-bottom: 40px !important;
+            padding-bottom: 20px !important;
+            position: relative;
+        }
+        .stSlider [data-baseweb="slider"] {
+            margin-bottom: 30px !important;
+        }
+        /* Melhorar espaçamento entre componentes */
+        .row-widget {
+            margin-bottom: 25px !important;
+        }
+        /* Evitar que ícones vermelhos apareçam com cor incorreta */
+        [data-testid="stImage"] {
+            z-index: 1;
+        }
         /* Estilização de radio buttons, checkboxes e selectboxes */
         .stRadio label span span:first-child,
-        .stCheckbox label span span:first-child,
-        .stSelectbox [data-baseweb="select"] div[aria-selected="true"] {
+        .stCheckbox label span span:first-child {
             background-color: #3498db;
             border-color: #3498db;
+        }
+        /* Uniformização dos textos de radio buttons e checkboxes */
+        .stRadio label, .stCheckbox label {
+            color: #3498db !important;
+            font-weight: 500 !important;
+        }
+        /* Uniformização dos selectboxes */
+        .stSelectbox [data-baseweb="select"] {
+            background-color: #3498db;
+            color: white;
+            border-radius: 6px;
+            border: none;
+        }
+        .stSelectbox [data-baseweb="select"] div, 
+        .stSelectbox [data-baseweb="select"] span {
+            color: white;
+        }
+        .stSelectbox [data-baseweb="select"]:hover {
+            background-color: #2980b9;
         }
         .navigation-button {
             margin-top: 25px;
@@ -220,7 +277,7 @@ def define_css():
         }
         /* Estilo para o botão de exportar PDF */
         .pdf-button {
-            background-color: #2ecc71;
+            background-color: #3498db;
             color: white;
             font-weight: 600;
             border-radius: 8px;
@@ -234,7 +291,7 @@ def define_css():
             transition: all 0.3s ease;
         }
         .pdf-button:hover {
-            background-color: #27ae60;
+            background-color: #2980b9;
             transform: translateY(-2px);
             box-shadow: 0 6px 12px rgba(0,0,0,0.1);
         }
@@ -245,17 +302,18 @@ def define_css():
         .stTabs [data-baseweb="tab"] {
             padding: 10px 20px;
             border-radius: 6px 6px 0 0;
+            background-color: #3498db;
+            color: white;
         }
         .stTabs [aria-selected="true"] {
-            background-color: #f0f7fb;
+            background-color: #2980b9;
             font-weight: 600;
-            color: #3498db;
+            color: white;
         }
     </style>
     """,
         unsafe_allow_html=True,
     )
-
     st.markdown(
         """
     <style>

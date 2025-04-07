@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Novo Lead Recebido - Dog's Club</title>
+	</head>
+	<body
+		style="
+			font-family: Arial, sans-serif;
+			line-height: 1.6;
+			color: #333333;
+			max-width: 600px;
+			margin: 0 auto;
+			padding: 20px;
+			background-color: #f8f9fa;
+		"
+	>
+		<div style="text-align: center">
+			<img
+				src="https://dogs-club-source.s3.us-east-1.amazonaws.com/logo.png"
+				alt="Dog's Club Logo"
+				style="max-width: 200px"
+			/>
+		</div>
+
+		<div
+			style="
+				background-color: #ffffff;
+				padding: 30px;
+				border-radius: 10px;
+				box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+				margin-top: 20px;
+			"
+		>
+			<h2 style="color: #3498db; margin-bottom: 20px; text-align: center">
+				Novo Lead Recebido
+			</h2>
+
+			<div
+				style="
+					background-color: #e3f2fd;
+					padding: 15px;
+					border-left: 5px solid #3498db;
+					margin-bottom: 20px;
+					border-radius: 4px;
+				"
+			>
+				<p style="margin: 0; font-weight: bold">
+					Um novo lead foi recebido e requer atenção.
+				</p>
+			</div>
+
+			<table
+				style="width: 100%; border-collapse: collapse; margin-bottom: 20px"
+			>
+				<tr>
+					<td style="padding: 8px; border-bottom: 1px solid #f2f2f2">
+						<strong>Nome:</strong>
+					</td>
+					<td style="padding: 8px; border-bottom: 1px solid #f2f2f2">
+						{{nome}}
+					</td>
+				</tr>
+				<tr>
+					<td style="padding: 8px; border-bottom: 1px solid #f2f2f2">
+						<strong>Email:</strong>
+					</td>
+					<td style="padding: 8px; border-bottom: 1px solid #f2f2f2">
+						{{email}}
+					</td>
+				</tr>
+				<tr>
+					<td style="padding: 8px; border-bottom: 1px solid #f2f2f2">
+						<strong>WhatsApp:</strong>
+					</td>
+					<td style="padding: 8px; border-bottom: 1px solid #f2f2f2">
+						{{whatsapp}}
+					</td>
+				</tr>
+				<tr>
+					<td style="padding: 8px; border-bottom: 1px solid #f2f2f2">
+						<strong>Petshop:</strong>
+					</td>
+					<td style="padding: 8px; border-bottom: 1px solid #f2f2f2">
+						{{petshop_name}}
+					</td>
+				</tr>
+				<tr>
+					<td style="padding: 8px; border-bottom: 1px solid #f2f2f2">
+						<strong>Fonte:</strong>
+					</td>
+					<td style="padding: 8px; border-bottom: 1px solid #f2f2f2">
+						{{fonte}}
+					</td>
+				</tr>
+				<tr>
+					<td style="padding: 8px; border-bottom: 1px solid #f2f2f2">
+						<strong>Data:</strong>
+					</td>
+					<td style="padding: 8px; border-bottom: 1px solid #f2f2f2">
+						{{data}}
+					</td>
+				</tr>
+				<tr>
+					<td style="padding: 8px; border-bottom: 1px solid #f2f2f2">
+						<strong>Timestamp:</strong>
+					</td>
+					<td style="padding: 8px; border-bottom: 1px solid #f2f2f2">
+						{{timestamp}}
+					</td>
+				</tr>
+			</table>
+
+			<div style="margin-bottom: 20px">
+				<h3 style="color: #3498db; margin-bottom: 10px">
+					Mensagem do Cliente:
+				</h3>
+				<p
+					style="
+						background-color: #f5f5f5;
+						padding: 15px;
+						border-left: 3px solid #3498db;
+						margin: 0;
+					"
+				>
+					{{mensagem}}
+				</p>
+			</div>
+
+			<div
+				style="
+					background-color: #f8d7da;
+					padding: 15px;
+					border-left: 5px solid #dc3545;
+					margin-top: 25px;
+					border-radius: 4px;
+				"
+			>
+				<p style="margin: 0; font-weight: bold; color: #721c24">
+					⚠️ Ação Necessária: Favor entrar em contato com o cliente em até 24
+					horas.
+				</p>
+			</div>
+
+			<hr style="border: none; border-top: 1px solid #eee; margin: 25px 0" />
+
+			<p
+				style="
+					font-size: 12px;
+					color: #6c757d;
+					text-align: center;
+					margin-bottom: 0;
+				"
+			>
+				Este é um email automático de notificação interna. Não responda a este
+				email.
+			</p>
+		</div>
+	</body>
+</html>

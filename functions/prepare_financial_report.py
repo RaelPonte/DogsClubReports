@@ -16,7 +16,7 @@ def prepare_financial_report(dados, resultado):
     relatorio = {
         "saude_financeira": f"""
 O <b>{dados.nome_petshop}</b> apresenta uma saúde financeira que requer atenção. 
-Com faturamento mensal de <b>{format_currency(dados.faturamento_mensal).replace("R$", "R\$")}</b> e lucratividade de <b>{format_percent(resultado.margem_lucro)}</b>, 
+Com faturamento mensal de <b>{format_currency(dados.faturamento_mensal)}</b> e lucratividade de <b>{format_percent(resultado.margem_lucro)}</b>, 
 o negócio está {'abaixo' if resultado.margem_lucro < INDUSTRY_STANDARD['margem_lucro'][0] else 'dentro'} da média do setor que fica entre 
 {INDUSTRY_STANDARD['margem_lucro'][0]}% e {INDUSTRY_STANDARD['margem_lucro'][1]}%. 
 
@@ -24,8 +24,7 @@ A taxa de ocupação de {format_percent(resultado.ocupacao_atual_percentual)} in
 {'subutilização significativa dos recursos' if resultado.ocupacao_atual_percentual < 70 else 'utilização adequada da capacidade'},
 resultando em {'perda' if resultado.faturamento_nao_realizado > 0 else 'otimização'} potencial de 
 <b>{format_currency(resultado.faturamento_nao_realizado).replace("R$", "R\$")}</b> mensais ou aproximadamente 
-<b>{format_currency(resultado.faturamento_nao_realizado * 12).replace("R$", "R\$")}</b> anuais.
-        """,
+<b>{format_currency(resultado.faturamento_nao_realizado * 12).replace("R$", "R\$")}</b> anuais.""",
         "ineficiencias": [
             {
                 "titulo": "Subutilização da Capacidade",

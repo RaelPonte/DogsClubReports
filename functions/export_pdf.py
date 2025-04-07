@@ -12,7 +12,7 @@ from reportlab.platypus import (
 from reportlab.lib.units import inch
 from datetime import datetime
 import io
-from reportlab.lib.enums import TA_CENTER
+from reportlab.lib.enums import TA_CENTER, TA_LEFT
 from utils import format_currency, format_percent
 
 
@@ -35,6 +35,16 @@ def export_dashboard_pdf(dados, resultado, relatorio, figuras):
     # Lista de elementos do PDF
     elements = []
 
+    # Definir cores principais com base no tema atualizado
+    AZUL_PRINCIPAL = colors.HexColor("#3498db")
+    AZUL_SECUNDARIO = colors.HexColor("#2980b9")
+    AZUL_ESCURO = colors.HexColor("#082f42")
+    CINZA_TEXTO = colors.HexColor("#2c3e50")
+    CINZA_CLARO = colors.HexColor("#f5f5f5")
+    VERMELHO = colors.HexColor("#e74c3c")
+    VERDE = colors.HexColor("#2ecc71")
+    VERDE_ESCURO = colors.HexColor("#0a8a40")
+
     # Estilos aprimorados
     styles = getSampleStyleSheet()
     title_style = ParagraphStyle(
@@ -42,7 +52,7 @@ def export_dashboard_pdf(dados, resultado, relatorio, figuras):
         parent=styles["Heading1"],
         fontSize=26,
         spaceAfter=20,
-        textColor=colors.HexColor("#3498db"),
+        textColor=AZUL_ESCURO,
         alignment=TA_CENTER,
         fontName="Helvetica-Bold",
         italic=False,
@@ -52,7 +62,7 @@ def export_dashboard_pdf(dados, resultado, relatorio, figuras):
         parent=styles["Heading2"],
         fontSize=20,
         spaceAfter=15,
-        textColor=colors.HexColor("#2c3e50"),
+        textColor=CINZA_TEXTO,
         alignment=TA_CENTER,
         fontName="Helvetica-Bold",
         italic=False,
@@ -62,7 +72,7 @@ def export_dashboard_pdf(dados, resultado, relatorio, figuras):
         parent=styles["Heading3"],
         fontSize=16,
         spaceAfter=10,
-        textColor=colors.HexColor("#3498db"),
+        textColor=AZUL_PRINCIPAL,
         borderPadding=(0, 0, 5, 0),
         borderWidth=0,
         borderColor=colors.HexColor("#e0e0e0"),
@@ -80,6 +90,47 @@ def export_dashboard_pdf(dados, resultado, relatorio, figuras):
         firstLineIndent=0,
         leading=14,  # Espaçamento entre linhas
         spaceAfter=6,  # Espaço após o parágrafo
+        textColor=CINZA_TEXTO,
+    )
+
+    # Estilo para seção de ineficiências
+    inefficiency_section_style = ParagraphStyle(
+        "InefficiencySection",
+        parent=section_style,
+        textColor=VERMELHO,
+        fontName="Helvetica-Bold",
+        fontSize=16,
+        alignment=TA_LEFT,
+    )
+
+    # Estilo para seção de recomendações
+    recommendation_section_style = ParagraphStyle(
+        "RecommendationSection",
+        parent=section_style,
+        textColor=VERDE_ESCURO,
+        fontName="Helvetica-Bold",
+        fontSize=16,
+        alignment=TA_LEFT,
+    )
+
+    # Estilo para seção de prioridades
+    priority_section_style = ParagraphStyle(
+        "PrioritySection",
+        parent=section_style,
+        textColor=VERDE_ESCURO,
+        fontName="Helvetica-Bold",
+        fontSize=16,
+        alignment=TA_LEFT,
+    )
+
+    # Estilo para seção de metas
+    goal_section_style = ParagraphStyle(
+        "GoalSection",
+        parent=section_style,
+        textColor=AZUL_PRINCIPAL,
+        fontName="Helvetica-Bold",
+        fontSize=16,
+        alignment=TA_LEFT,
     )
 
     # Estilo que permite processamento de tags HTML
@@ -88,6 +139,7 @@ def export_dashboard_pdf(dados, resultado, relatorio, figuras):
         parent=styles["Normal"],
         wordWrap="CJK",
         leading=14,
+        textColor=CINZA_TEXTO,
     )
 
     # Adicionar logo e cabeçalho
@@ -111,7 +163,12 @@ def export_dashboard_pdf(dados, resultado, relatorio, figuras):
     elements.append(
         Paragraph(
             f"Data de geração do relatório: {datetime.now().strftime('%d/%m/%Y')}",
-            ParagraphStyle("Date", parent=styles["Normal"], alignment=TA_CENTER),
+            ParagraphStyle(
+                "Date",
+                parent=styles["Normal"],
+                alignment=TA_CENTER,
+                textColor=CINZA_TEXTO,
+            ),
         )
     )
     elements.append(Spacer(1, 20))
@@ -161,7 +218,7 @@ def export_dashboard_pdf(dados, resultado, relatorio, figuras):
                     "BACKGROUND",
                     (0, 0),
                     (-1, 0),
-                    colors.HexColor("#3498db"),
+                    AZUL_PRINCIPAL,
                 ),  # Azul Dogs Club
                 (
                     "TEXTCOLOR",
@@ -183,7 +240,7 @@ def export_dashboard_pdf(dados, resultado, relatorio, figuras):
                     (0, 0),
                     (-1, 0),
                     2,
-                    colors.HexColor("#3498db"),
+                    AZUL_PRINCIPAL,
                 ),  # Linha mais grossa abaixo do cabeçalho
                 ("ROUNDEDCORNERS", [10, 10, 10, 10]),
             ]
@@ -193,7 +250,14 @@ def export_dashboard_pdf(dados, resultado, relatorio, figuras):
     elements.append(Spacer(1, 25))
 
     # Potencial Não Aproveitado com design aprimorado
-    elements.append(Paragraph("Potencial Não Aproveitado", section_style))
+    potential_section_style = ParagraphStyle(
+        "PotentialSection",
+        parent=section_style,
+        textColor=VERMELHO,
+        fontName="Helvetica-Bold",
+        fontSize=16,
+    )
+    elements.append(Paragraph("Potencial Não Aproveitado", potential_section_style))
     elements.append(Spacer(1, 10))
 
     potential_data = [
@@ -223,7 +287,7 @@ def export_dashboard_pdf(dados, resultado, relatorio, figuras):
                     "BACKGROUND",
                     (0, 0),
                     (-1, 0),
-                    colors.HexColor("#e74c3c"),
+                    VERMELHO,
                 ),  # Vermelho para alertar
                 ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
                 (
@@ -236,7 +300,7 @@ def export_dashboard_pdf(dados, resultado, relatorio, figuras):
                     "TEXTCOLOR",
                     (0, 1),
                     (-1, 1),
-                    colors.HexColor("#e74c3c"),
+                    VERMELHO,
                 ),  # Texto vermelho para os valores
                 ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#e0e0e0")),
                 ("GRID", (0, 0), (-1, -1), 1, colors.HexColor("#e0e0e0")),
@@ -248,170 +312,293 @@ def export_dashboard_pdf(dados, resultado, relatorio, figuras):
 
     elements.append(
         Paragraph(
-            "<h2><b>Observe os gráficos abaixo na página seguinte para entender melhor o potencial de aumento de lucro.</b></h2>",
+            "Seu petshop está deixando de ganhar dinheiro devido à capacidade não utilizada.",
+            ParagraphStyle(
+                "RedAlert",
+                parent=normal_style_wrapped,
+                textColor=VERMELHO,
+                fontName="Helvetica-Bold",
+                fontSize=12,
+            ),
+        )
+    )
+    elements.append(Spacer(1, 15))
+
+    # Adicionar gráficos se disponíveis
+    if figuras and len(figuras) > 0:
+        elements.append(Paragraph("Visualizações", section_style))
+        elements.append(Spacer(1, 10))
+
+        # Para colocar duas figuras lado a lado, usaremos uma tabela
+        fig_count = len(figuras)
+        for i in range(0, fig_count, 2):
+            # Processar a primeira imagem
+            img_buffer1 = io.BytesIO()
+            figuras[i].savefig(img_buffer1, format="png", bbox_inches="tight", dpi=150)
+            img_buffer1.seek(0)
+
+            img1 = Image(img_buffer1)
+            scale_factor = 0.2
+            img1.drawWidth = img1.drawWidth * scale_factor
+            img1.drawHeight = img1.drawHeight * scale_factor
+
+            # Verificar se há uma segunda imagem
+            if i + 1 < fig_count:
+                # Processar a segunda imagem
+                img_buffer2 = io.BytesIO()
+                figuras[i + 1].savefig(
+                    img_buffer2, format="png", bbox_inches="tight", dpi=150
+                )
+                img_buffer2.seek(0)
+                img2 = Image(img_buffer2)
+                img2.drawWidth = img2.drawWidth * scale_factor
+                img2.drawHeight = img2.drawHeight * scale_factor
+                # Criar tabela com duas imagens lado a lado
+                fig_table_data = [[img1, img2]]
+            else:
+                # Criar tabela com apenas uma imagem e uma célula vazia
+                fig_table_data = [[img1, ""]]
+
+            # Criar a tabela para esta linha de imagens
+            fig_table = Table(
+                fig_table_data,
+                colWidths=[3.7 * inch, 3.7 * inch],
+                hAlign="CENTER",
+                vAlign="MIDDLE",
+            )
+            fig_table.setStyle(
+                TableStyle(
+                    [
+                        ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+                        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                        ("LEFTPADDING", (0, 0), (-1, -1), 5),
+                        ("RIGHTPADDING", (0, 0), (-1, -1), 5),
+                        ("TOPPADDING", (0, 0), (-1, -1), 5),
+                        ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
+                    ]
+                )
+            )
+
+            # Adicionar a tabela ao documento
+            elements.append(fig_table)
+            elements.append(Spacer(1, 15))
+
+    # Principais Ineficiências
+    elements.append(Paragraph("Principais Ineficiências", inefficiency_section_style))
+    elements.append(Spacer(1, 10))
+
+    # Criar tabela de ineficiências
+    for i, ineficiencia in enumerate(relatorio["ineficiencias"]):
+        elements.append(
+            Paragraph(
+                f"● {i+1}. {ineficiencia['titulo']}",
+                ParagraphStyle(
+                    "InefficiencyTitle",
+                    parent=normal_style_wrapped,
+                    textColor=VERMELHO,
+                    fontName="Helvetica-Bold",
+                    fontSize=12,
+                    spaceBefore=10,
+                    spaceAfter=2,
+                ),
+            )
+        )
+        elements.append(
+            Paragraph(
+                ineficiencia["descricao"],
+                ParagraphStyle(
+                    "InefficiencyDescription",
+                    parent=normal_style_wrapped,
+                    leftIndent=15,
+                    textColor=CINZA_TEXTO,
+                ),
+            )
+        )
+
+    elements.append(Spacer(1, 20))
+
+    # Recomendações práticas
+    elements.append(Paragraph("Recomendações Práticas", recommendation_section_style))
+    elements.append(Spacer(1, 10))
+
+    # Parágrafos de recomendações
+    for i, rec in enumerate(relatorio["recomendacoes"]):
+        elements.append(
+            Paragraph(
+                f"✓ {i+1}. {rec['titulo']}",
+                ParagraphStyle(
+                    "RecommendationTitle",
+                    parent=normal_style_wrapped,
+                    textColor=VERDE_ESCURO,
+                    fontName="Helvetica-Bold",
+                    fontSize=12,
+                    spaceBefore=10,
+                    spaceAfter=2,
+                ),
+            )
+        )
+        elements.append(
+            Paragraph(
+                rec["descricao"],
+                ParagraphStyle(
+                    "RecommendationDescription",
+                    parent=normal_style_wrapped,
+                    leftIndent=15,
+                    textColor=CINZA_TEXTO,
+                ),
+            )
+        )
+
+        # Adicionar impacto e prazo em parágrafos separados para melhor legibilidade
+        elements.append(Spacer(1, 5))
+
+        # Criar um estilo para impacto
+        impact_style = ParagraphStyle(
+            "ImpactStyle",
+            parent=normal_style_wrapped,
+            textColor=VERDE_ESCURO,
+            fontName="Helvetica-Bold",
+            fontSize=10,
+            leftIndent=15,
+            backgroundColor=colors.HexColor("#e8f8e8"),
+            borderPadding=(5, 5, 5, 5),
+            borderRadius=5,
+        )
+
+        # Criar um estilo para prazo
+        deadline_style = ParagraphStyle(
+            "DeadlineStyle",
+            parent=normal_style_wrapped,
+            textColor=AZUL_PRINCIPAL,
+            fontName="Helvetica-Bold",
+            fontSize=10,
+            leftIndent=15,
+            backgroundColor=colors.HexColor("#e3f2fd"),
+            borderPadding=(5, 5, 5, 5),
+            borderRadius=5,
+        )
+
+        # Adicionar impacto e prazo como parágrafos separados
+        elements.append(Paragraph(f"IMPACTO: {rec['impacto']}", impact_style))
+
+        elements.append(Spacer(1, 5))
+
+        elements.append(Paragraph(f"PRAZO: {rec['prazo']}", deadline_style))
+
+        elements.append(Spacer(1, 10))
+
+    # Adicionar espaçamento após a seção de recomendações
+    elements.append(Spacer(1, 20))
+
+    # Prioridades de Curto Prazo
+    elements.append(Paragraph("Prioridades de Curto Prazo", priority_section_style))
+    elements.append(Spacer(1, 10))
+
+    for i, prioridade in enumerate(relatorio["prioridades"]):
+        elements.append(
+            Paragraph(
+                f"! {i+1}. {prioridade['titulo']}",
+                ParagraphStyle(
+                    "PriorityTitle",
+                    parent=normal_style_wrapped,
+                    textColor=VERDE_ESCURO,
+                    fontName="Helvetica-Bold",
+                    fontSize=12,
+                    spaceBefore=10,
+                    spaceAfter=2,
+                ),
+            )
+        )
+        elements.append(
+            Paragraph(
+                prioridade["descricao"],
+                ParagraphStyle(
+                    "PriorityDescription",
+                    parent=normal_style_wrapped,
+                    leftIndent=15,
+                    textColor=CINZA_TEXTO,
+                ),
+            )
+        )
+
+    elements.append(Spacer(1, 20))
+
+    # Metas Sugeridas
+    elements.append(Paragraph("Metas Sugeridas", goal_section_style))
+    elements.append(Spacer(1, 10))
+
+    for i, meta in enumerate(relatorio["metas"]):
+        elements.append(
+            Paragraph(
+                f"* {i+1}. {meta['titulo']}",
+                ParagraphStyle(
+                    "GoalTitle",
+                    parent=normal_style_wrapped,
+                    textColor=AZUL_PRINCIPAL,
+                    fontName="Helvetica-Bold",
+                    fontSize=12,
+                    spaceBefore=10,
+                    spaceAfter=2,
+                ),
+            )
+        )
+        elements.append(
+            Paragraph(
+                meta["descricao"],
+                ParagraphStyle(
+                    "GoalDescription",
+                    parent=normal_style_wrapped,
+                    leftIndent=15,
+                    textColor=CINZA_TEXTO,
+                ),
+            )
+        )
+
+    elements.append(Spacer(1, 25))
+
+    # Rodapé com informações de contato
+    elements.append(
+        Paragraph(
+            """
+            <para alignment="center">
+            <font size="10" color="#7f8c8d">
+            Para mais informações ou agendar uma consultoria gratuita, entre em contato conosco:
+            </font>
+            </para>
+            """,
             html_style,
         )
     )
-    elements.append(Spacer(1, 190))
-
-    # Visualizações - Adicionar gráficos aprimorados
-    elements.append(Paragraph("Visualizações", section_style))
-    elements.append(Spacer(1, 15))
-
-    # Para colocar duas figuras lado a lado, usaremos uma tabela
-    fig_count = len(figuras)
-    for i in range(0, fig_count, 2):
-        # Processar a primeira imagem
-        img_buffer1 = io.BytesIO()
-        figuras[i].savefig(img_buffer1, format="png", bbox_inches="tight", dpi=150)
-        img_buffer1.seek(0)
-
-        img1 = Image(img_buffer1)
-        scale_factor = 0.2
-        img1.drawWidth = img1.drawWidth * scale_factor
-        img1.drawHeight = img1.drawHeight * scale_factor
-
-        # Verificar se há uma segunda imagem
-        if i + 1 < fig_count:
-            # Processar a segunda imagem
-            img_buffer2 = io.BytesIO()
-            figuras[i + 1].savefig(
-                img_buffer2, format="png", bbox_inches="tight", dpi=150
-            )
-            img_buffer2.seek(0)
-            img2 = Image(img_buffer2)
-            img2.drawWidth = img2.drawWidth * scale_factor
-            img2.drawHeight = img2.drawHeight * scale_factor
-            # Criar tabela com duas imagens lado a lado
-            fig_table_data = [[img1, img2]]
-        else:
-            # Criar tabela com apenas uma imagem e uma célula vazia
-            fig_table_data = [[img1, ""]]
-
-        # Criar a tabela para esta linha de imagens
-        fig_table = Table(
-            fig_table_data,
-            colWidths=[3.7 * inch, 3.7 * inch],
-            hAlign="CENTER",
-            vAlign="MIDDLE",
-        )
-        fig_table.setStyle(
-            TableStyle(
-                [
-                    ("ALIGN", (0, 0), (-1, -1), "CENTER"),
-                    ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-                    ("LEFTPADDING", (0, 0), (-1, -1), 5),
-                    ("RIGHTPADDING", (0, 0), (-1, -1), 5),
-                    ("TOPPADDING", (0, 0), (-1, -1), 5),
-                    ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
-                ]
-            )
-        )
-
-        # Adicionar a tabela ao documento
-        elements.append(fig_table)
-        elements.append(Spacer(1, 20))
-
-    # Análise e Recomendações
-    elements.append(Paragraph("Análise e Recomendações", section_style))
-    elements.append(Spacer(1, 10))
-
-    # Saúde Financeira
-    heading4_bold = ParagraphStyle(
-        "Heading4Bold",
-        parent=styles["Heading4"],
-        fontName="Helvetica-Bold",
-        italic=False,
-    )
-    elements.append(Paragraph("Saúde Financeira Atual", heading4_bold))
-
-    # Usar estilo que processa tags HTML para o texto da saúde financeira
-    elements.append(Paragraph(relatorio["saude_financeira"], html_style))
-    elements.append(Spacer(1, 15))
-
-    # Ineficiências com design melhorado
-    elements.append(Paragraph("Principais Ineficiências", heading4_bold))
     elements.append(Spacer(1, 5))
-
-    # Tabela de ineficiências
-    for i, ineficiencia in enumerate(relatorio["ineficiencias"], 1):
-        inef_title = ParagraphStyle(
-            "InefTitle",
-            parent=styles["Heading5"],
-            textColor=colors.HexColor("#e74c3c"),
-            fontName="Helvetica-Bold",
-            italic=False,
+    elements.append(
+        Paragraph(
+            f"""
+            <para alignment="center">
+            <font size="10" color="#3498db">
+            <b>contato@dogsclub.com.br</b> | <b>www.dogsclub.com.br</b>
+            </font>
+            </para>
+            """,
+            html_style,
         )
-        elements.append(Paragraph(f"{i}. {ineficiencia['titulo']}", inef_title))
-        # Limitar a largura do texto para evitar que saia da página
-        desc_text = Paragraph(ineficiencia["descricao"], normal_style_wrapped)
-        elements.append(desc_text)
-        elements.append(Spacer(1, 5))
-
-    # Recomendações com design aprimorado
-    elements.append(Paragraph("Recomendações Práticas", heading4_bold))
+    )
     elements.append(Spacer(1, 10))
-
-    # Adicionar cada recomendação como um bloco
-    for i, recomendacao in enumerate(relatorio["recomendacoes"], 1):
-        rec_title = ParagraphStyle(
-            "RecTitle",
-            parent=styles["Heading5"],
-            textColor=colors.HexColor("#2ecc71"),
-            fontName="Helvetica-Bold",
-            italic=False,
-        )
-        elements.append(Paragraph(f"{i}. {recomendacao['titulo']}", rec_title))
-
-        # Aplicar estilo com quebra de texto adequada para a descrição
-        desc_text = Paragraph(recomendacao["descricao"], normal_style_wrapped)
-        elements.append(desc_text)
-        elements.append(Spacer(1, 5))
-
-        # Modificar o estilo para incluir formatação HTML para negrito
-        impact_data = [
-            Paragraph(
-                "<b>Impacto estimado: </b>" + recomendacao["impacto"], html_style
-            ),
-            Paragraph(
-                "<b>Prazo sugerido para implementação: </b>" + recomendacao["prazo"],
-                html_style,
-            ),
-        ]
-        for p in impact_data:
-            elements.append(p)
-        elements.append(Spacer(1, 15))
-
-        # Se não for o último elemento, adicionar quebra maior para separação
-        if i < len(relatorio["recomendacoes"]):
-            elements.append(Spacer(1, 10))
-
-    # Rodapé com informações de contato
-    elements.append(Spacer(1, 30))
-    footer_style = ParagraphStyle(
-        "Footer",
-        parent=styles["Normal"],
-        fontSize=9,
-        textColor=colors.HexColor("#7f8c8d"),
-        alignment=TA_CENTER,
-    )
-
     elements.append(
         Paragraph(
-            "Dog's Club - Conectando Pets e Cuidados com Simplicidade", footer_style
-        )
-    )
-    elements.append(
-        Paragraph("✉ suporte@dogsclub.com.br | ✆ (11) 9 9748-5353", footer_style)
-    )
-    elements.append(
-        Paragraph(
-            f"© {datetime.now().year} Dog's Club. Todos os direitos reservados.",
-            footer_style,
+            """
+            <para alignment="center">
+            <font size="8" color="#7f8c8d">
+            © 2025 Dog's Club. Todos os direitos reservados.
+            </font>
+            </para>
+            """,
+            html_style,
         )
     )
 
-    # Gerar PDF
+    # Construir o PDF
     doc.build(elements)
+
+    # Obter o valor do buffer e retornar
     buffer.seek(0)
     return buffer
