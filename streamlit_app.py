@@ -84,6 +84,32 @@ def validar_formato_hora(hora):
     return bool(re.match(r"^\d{1,2}:\d{2}$", hora))
 
 
+# Função para validar formato de email
+def validar_email(email):
+    if not email or not email.strip():
+        return False
+    padrao_email = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+    return bool(re.match(padrao_email, email))
+
+
+# Função para validar formato de telefone brasileiro
+def validar_telefone(telefone):
+    if not telefone or not telefone.strip():
+        return True  # Telefone não é obrigatório
+    # Aceita formatos: (11) 91234-5678, (11) 93355 7283, 11 93355 7283, 11933557283, etc.
+    padrao_telefone = r"^\(?([0-9]{2})\)?\s?9?\s?([0-9]{4,5})-?([0-9]{4})$"
+    return bool(re.match(padrao_telefone, telefone))
+
+
+# Função para validar nome e nome do petshop
+def validar_nome(nome):
+    if not nome or not nome.strip():
+        return False
+    if len(nome) > 75:
+        return False
+    return True
+
+
 # Função para criar o cabeçalho do formulário
 def create_header():
     st.markdown("<h1 class='main-header'>Dog's Club</h1>", unsafe_allow_html=True)
@@ -126,12 +152,15 @@ def step_1_basic_info():
         st.session_state["nome_salvo"] = st.session_state.get("nome", "")
 
     # Campo para nome completo - adicionando indicador visual de campo obrigatório
-    st.text_input(
+    nome = st.text_input(
         "Seu Nome Completo *",  # Asterisco para indicar que é obrigatório
         key="nome",
-        help="Seu nome completo para contato (obrigatório)",
+        help="Seu nome completo para contato (obrigatório, máximo 75 caracteres)",
         on_change=on_nome_change,
     )
+    # Validação imediata do nome
+    if nome and not validar_nome(nome):
+        st.error("Nome inválido. Certifique-se de que não ultrapasse 75 caracteres.")
 
     # Recuperar valor salvo, se existir
     if "nome_petshop_salvo" not in st.session_state:
@@ -140,12 +169,17 @@ def step_1_basic_info():
         )
 
     # Usar apenas o valor da sessão sem definir valor padrão no text_input
-    st.text_input(
+    nome_petshop = st.text_input(
         "Nome do Petshop *",  # Asterisco para indicar que é obrigatório
         key="nome_petshop",
-        help="Nome comercial do seu estabelecimento (obrigatório)",
+        help="Nome comercial do seu estabelecimento (obrigatório, máximo 75 caracteres)",
         on_change=on_nome_petshop_change,
     )
+    # Validação imediata do nome do petshop
+    if nome_petshop and not validar_nome(nome_petshop):
+        st.error(
+            "Nome do petshop inválido. Certifique-se de que não ultrapasse 75 caracteres."
+        )
 
     col1, col2 = st.columns(2)
     with col1:
@@ -154,12 +188,15 @@ def step_1_basic_info():
             st.session_state["email_salvo"] = st.session_state.get("email_contato", "")
 
         # Usar apenas a chave, sem valor padrão
-        st.text_input(
+        email = st.text_input(
             "Email de Contato *",  # Asterisco para indicar que é obrigatório
             key="email_contato",
             help="Email principal para contato (obrigatório)",
             on_change=on_email_change,
         )
+        # Validação imediata do email
+        if email and not validar_email(email):
+            st.error("Email inválido. Por favor, digite um email válido.")
     with col2:
         # Recuperar valor da sessão salvo, se existir
         if "telefone_salvo" not in st.session_state:
@@ -168,12 +205,15 @@ def step_1_basic_info():
             )
 
         # Usar apenas a chave, sem valor padrão
-        st.text_input(
+        telefone = st.text_input(
             "Telefone",
             key="telefone_contato",
-            help="Número de telefone com DDD",
+            help="Número de telefone com DDD, formato: (11) 91234-5678",
             on_change=on_telefone_change,
         )
+        # Validação imediata do telefone
+        if telefone and not validar_telefone(telefone):
+            st.error("Formato de telefone inválido. Use o formato: (11) 91234-5678")
 
     st.markdown("</div>", unsafe_allow_html=True)
     navigation_buttons(1)
@@ -419,9 +459,9 @@ def navigation_buttons(step):
                     nome = st.session_state.get(
                         "nome", st.session_state.get("nome_salvo", "")
                     )
-                    if not nome or nome.strip() == "":
+                    if not validar_nome(nome):
                         st.error(
-                            "O campo 'Seu Nome Completo' é obrigatório. Por favor, preencha-o antes de prosseguir."
+                            "O campo 'Seu Nome Completo' é obrigatório e deve ter no máximo 75 caracteres."
                         )
                         return
 
@@ -429,9 +469,27 @@ def navigation_buttons(step):
                     nome_petshop = st.session_state.get(
                         "nome_petshop", st.session_state.get("nome_petshop_salvo", "")
                     )
-                    if not nome_petshop or nome_petshop.strip() == "":
+                    if not validar_nome(nome_petshop):
                         st.error(
-                            "O campo 'Nome do Petshop' é obrigatório. Por favor, preencha-o antes de prosseguir."
+                            "O campo 'Nome do Petshop' é obrigatório e deve ter no máximo 75 caracteres."
+                        )
+                        return
+
+                    # Verificar email
+                    email = st.session_state.get(
+                        "email_contato", st.session_state.get("email_salvo", "")
+                    )
+                    if not validar_email(email):
+                        st.error("Por favor, forneça um email válido.")
+                        return
+
+                    # Verificar telefone (se preenchido)
+                    telefone = st.session_state.get(
+                        "telefone_contato", st.session_state.get("telefone_salvo", "")
+                    )
+                    if telefone and not validar_telefone(telefone):
+                        st.error(
+                            "O formato do telefone é inválido. Use o formato: (11) 91234-5678"
                         )
                         return
 
