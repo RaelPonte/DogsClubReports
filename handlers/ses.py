@@ -16,26 +16,23 @@ class SESHandler:
         Inicializa o handler do SES.
 
         Args:
-            region_name: Região AWS opcional. Se não fornecida, usa a região padrão.
+            region_name: Região AWS opcional. Se não fornecida, usa a região definida em AWS_REGION.
         """
         # Obter credenciais AWS das variáveis de ambiente
         aws_access_key_id = os.getenv("AWS_ACCESS_KEY_ID")
         aws_secret_access_key = os.getenv("AWS_SECRET_ACCESS_KEY")
 
-        # Configurar o cliente SES com as credenciais obtidas do ambiente
-        if region_name:
-            self.ses_client = boto3.client(
-                "ses",
-                region_name=region_name,
-                aws_access_key_id=aws_access_key_id,
-                aws_secret_access_key=aws_secret_access_key,
-            )
-        else:
-            self.ses_client = boto3.client(
-                "ses",
-                aws_access_key_id=aws_access_key_id,
-                aws_secret_access_key=aws_secret_access_key,
-            )
+        # Obter a região da variável de ambiente se não for especificada
+        if not region_name:
+            region_name = os.getenv("AWS_REGION")
+
+        # Configurar o cliente SES com as credenciais e região
+        self.ses_client = boto3.client(
+            "ses",
+            region_name=region_name,
+            aws_access_key_id=aws_access_key_id,
+            aws_secret_access_key=aws_secret_access_key,
+        )
 
         self._email_regex = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
 
