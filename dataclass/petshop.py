@@ -11,7 +11,10 @@ class PetshopData(BaseModel):
     nome_petshop: str = Field(description="Nome do Petshop")
     email_contato: Optional[str] = Field(description="E-mail de contato", default=None)
     telefone_contato: Optional[str] = Field(
-        description="Telefone de contato", default=None
+        default=None, description="Telefone de contato"
+    )
+    whatsapp_contato: Optional[str] = Field(
+        default=None, description="Número de WhatsApp para contato"
     )
 
     # Dados operacionais

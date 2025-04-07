@@ -609,13 +609,13 @@ def show_results(dados, resultado):
                     )
 
                 email = dados.email_contato
-                telefone = getattr(dados, "telefone_contato", "")
+                whatsapp = getattr(dados, "whatsapp_contato", "")
                 mensagem = st.session_state.get("contato_mensagem", "")
 
                 lead_handler.create_lead(
                     name=nome_usuario,
                     email=email,
-                    whatsapp=telefone,
+                    whatsapp=whatsapp,
                     petshop_name=dados.nome_petshop,
                     message=mensagem,
                     source="streamlit",
@@ -634,7 +634,7 @@ def show_results(dados, resultado):
                 email_handler.send_internal_notification(
                     nome=nome_usuario,
                     email=email,
-                    whatsapp=telefone,
+                    whatsapp=whatsapp,
                     petshop_name=dados.nome_petshop,
                     mensagem=mensagem,
                     fonte="relatorio_financeiro_streamlit",

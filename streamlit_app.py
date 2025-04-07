@@ -70,11 +70,11 @@ def on_nome_petshop_change():
     print(f"Nome do petshop salvo: {st.session_state['nome_petshop_salvo']}")
 
 
-def on_telefone_change():
-    """Função callback para garantir que o telefone seja salvo"""
-    st.session_state["telefone_salvo"] = st.session_state.get("telefone_contato", "")
+def on_whatsapp_change():
+    """Função callback para garantir que o número de WhatsApp seja salvo"""
+    st.session_state["whatsapp_salvo"] = st.session_state.get("whatsapp_contato", "")
     # Também registrar no log para depuração
-    print(f"Telefone salvo: {st.session_state['telefone_salvo']}")
+    print(f"WhatsApp salvo: {st.session_state['whatsapp_salvo']}")
 
 
 # Função para validar formato de hora
@@ -92,13 +92,13 @@ def validar_email(email):
     return bool(re.match(padrao_email, email))
 
 
-# Função para validar formato de telefone brasileiro
-def validar_telefone(telefone):
-    if not telefone or not telefone.strip():
-        return True  # Telefone não é obrigatório
+# Função para validar formato de WhatsApp brasileiro
+def validar_whatsapp(whatsapp):
+    if not whatsapp or not whatsapp.strip():
+        return True  # WhatsApp não é obrigatório
     # Aceita formatos: (11) 91234-5678, (11) 93355 7283, 11 93355 7283, 11933557283, etc.
-    padrao_telefone = r"^\(?([0-9]{2})\)?\s?9?\s?([0-9]{4,5})-?([0-9]{4})$"
-    return bool(re.match(padrao_telefone, telefone))
+    padrao_whatsapp = r"^\(?([0-9]{2})\)?\s?9?\s?([0-9]{4,5})-?([0-9]{4})$"
+    return bool(re.match(padrao_whatsapp, whatsapp))
 
 
 # Função para validar nome e nome do petshop
@@ -199,21 +199,21 @@ def step_1_basic_info():
             st.error("Email inválido. Por favor, digite um email válido.")
     with col2:
         # Recuperar valor da sessão salvo, se existir
-        if "telefone_salvo" not in st.session_state:
-            st.session_state["telefone_salvo"] = st.session_state.get(
-                "telefone_contato", ""
+        if "whatsapp_salvo" not in st.session_state:
+            st.session_state["whatsapp_salvo"] = st.session_state.get(
+                "whatsapp_contato", ""
             )
 
         # Usar apenas a chave, sem valor padrão
-        telefone = st.text_input(
-            "Telefone",
-            key="telefone_contato",
-            help="Número de telefone com DDD, formato: (11) 91234-5678",
-            on_change=on_telefone_change,
+        whatsapp = st.text_input(
+            "Número de WhatsApp",
+            key="whatsapp_contato",
+            help="Número de WhatsApp com DDD, formato: (11) 91234-5678",
+            on_change=on_whatsapp_change,
         )
-        # Validação imediata do telefone
-        if telefone and not validar_telefone(telefone):
-            st.error("Formato de telefone inválido. Use o formato: (11) 91234-5678")
+        # Validação imediata do whatsapp
+        if whatsapp and not validar_whatsapp(whatsapp):
+            st.error("Formato de WhatsApp inválido. Use o formato: (11) 91234-5678")
 
     st.markdown("</div>", unsafe_allow_html=True)
     navigation_buttons(1)
@@ -483,13 +483,13 @@ def navigation_buttons(step):
                         st.error("Por favor, forneça um email válido.")
                         return
 
-                    # Verificar telefone (se preenchido)
-                    telefone = st.session_state.get(
-                        "telefone_contato", st.session_state.get("telefone_salvo", "")
+                    # Verificar WhatsApp (se preenchido)
+                    whatsapp = st.session_state.get(
+                        "whatsapp_contato", st.session_state.get("whatsapp_salvo", "")
                     )
-                    if telefone and not validar_telefone(telefone):
+                    if whatsapp and not validar_whatsapp(whatsapp):
                         st.error(
-                            "O formato do telefone é inválido. Use o formato: (11) 91234-5678"
+                            "O formato do WhatsApp é inválido. Use o formato: (11) 91234-5678"
                         )
                         return
 
@@ -597,7 +597,7 @@ def create_simple_sidebar():
             """
         <div style="background-color: #f0f7fb; padding: 15px; border-radius: 8px; border-left: 3px solid #3498db;">
             <p><b>📧 suporte@dogsclub.com.br</b></p>
-            <p><b>📱 (11) 99748-5353</b></p>
+            <p><b>📱 WhatsApp: (11) 99748-5353</b></p>
         </div>
         """,
             unsafe_allow_html=True,
@@ -656,10 +656,10 @@ def main():
         st.session_state["email_contato"] = ""
     if "email_salvo" not in st.session_state:
         st.session_state["email_salvo"] = ""
-    if "telefone_contato" not in st.session_state:
-        st.session_state["telefone_contato"] = ""
-    if "telefone_salvo" not in st.session_state:
-        st.session_state["telefone_salvo"] = ""
+    if "whatsapp_contato" not in st.session_state:
+        st.session_state["whatsapp_contato"] = ""
+    if "whatsapp_salvo" not in st.session_state:
+        st.session_state["whatsapp_salvo"] = ""
 
     # Etapa 2: Operação
     if "horario_abertura" not in st.session_state:

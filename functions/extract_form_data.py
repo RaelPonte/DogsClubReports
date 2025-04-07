@@ -27,6 +27,11 @@ def extract_form_data():
     if not dados["email_contato"] or dados["email_contato"].strip() == "":
         dados["email_contato"] = st.session_state.get("email_salvo", "")
 
+    # WhatsApp
+    dados["whatsapp_contato"] = st.session_state.get("whatsapp_contato", "")
+    if not dados["whatsapp_contato"] or dados["whatsapp_contato"].strip() == "":
+        dados["whatsapp_contato"] = st.session_state.get("whatsapp_salvo", "")
+
     # Telefone
     dados["telefone_contato"] = st.session_state.get("telefone_contato", "")
     if not dados["telefone_contato"] or dados["telefone_contato"].strip() == "":
