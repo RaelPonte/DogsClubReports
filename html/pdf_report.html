@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Análise Financeira do seu Petshop - Dog's Club</title>
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				line-height: 1.6;
+				color: #333;
+				margin: 0;
+				padding: 0;
+				background-color: #f9f9f9;
+			}
+			.container {
+				max-width: 600px;
+				margin: 0 auto;
+				padding: 20px;
+				background-color: #fff;
+				border-radius: 8px;
+				box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+			}
+			.header {
+				text-align: center;
+				padding-bottom: 20px;
+				border-bottom: 1px solid #eee;
+			}
+			.logo {
+				max-width: 180px;
+				margin: 0 auto 15px;
+				display: block;
+			}
+			h1 {
+				color: #3498db;
+				font-size: 24px;
+				margin: 0 0 10px;
+			}
+			h2 {
+				color: #2c3e50;
+				font-size: 18px;
+				margin: 15px 0;
+			}
+			.content {
+				padding: 20px 0;
+			}
+			.highlight {
+				background-color: #f8f9fa;
+				border-left: 4px solid #3498db;
+				padding: 15px;
+				margin: 20px 0;
+				border-radius: 4px;
+			}
+			.highlight h3 {
+				color: #3498db;
+				margin-top: 0;
+			}
+			.button {
+				display: inline-block;
+				padding: 12px 24px;
+				background-color: #3498db;
+				color: #ffffff;
+				text-decoration: none;
+				border-radius: 4px;
+				font-weight: bold;
+				margin: 15px 0;
+			}
+			.button:hover {
+				background-color: #2980b9;
+			}
+			.footer {
+				margin-top: 30px;
+				text-align: center;
+				font-size: 12px;
+				color: #777;
+				border-top: 1px solid #eee;
+				padding-top: 20px;
+			}
+			.social-icons {
+				margin: 15px 0;
+			}
+			.social-icons a {
+				margin: 0 5px;
+				display: inline-block;
+			}
+			.social-icons img {
+				width: 24px;
+				height: 24px;
+			}
+			@media (max-width: 600px) {
+				.container {
+					width: 100%;
+					border-radius: 0;
+					box-shadow: none;
+				}
+				h1 {
+					font-size: 22px;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="header">
+				<img
+					src="https://dogs-club-source.s3.us-east-1.amazonaws.com/logo.png"
+					alt="Dog's Club Logo"
+					class="logo"
+				/>
+				<h1>Análise Financeira do seu Petshop</h1>
+			</div>
+
+			<div class="content">
+				<p>Olá, {{nome}}!</p>
+
+				<p>
+					Agradecemos por utilizar nossa ferramenta de análise financeira para o
+					seu petshop <strong>{{petshop_name}}</strong>.
+				</p>
+
+				<div class="highlight">
+					<h3>💰 Principais Insights:</h3>
+					<p>
+						De acordo com nossa análise, seu petshop tem um potencial não
+						aproveitado de aproximadamente
+						<strong>{{faturamento_nao_realizado}}/mês</strong>.
+					</p>
+					<p>
+						Isso representa uma oportunidade significativa para aumentar sua
+						lucratividade!
+					</p>
+				</div>
+
+				<p>
+					Anexamos o relatório completo em PDF com todas as análises detalhadas,
+					métricas e recomendações personalizadas.
+				</p>
+
+				<p>Para aproveitar ao máximo este relatório:</p>
+				<ol>
+					<li>
+						Analise as métricas principais e compare com seu desempenho atual
+					</li>
+					<li>
+						Revise a seção "Potencial Não Aproveitado" para identificar
+						oportunidades
+					</li>
+					<li>Implemente as recomendações práticas sugeridas</li>
+				</ol>
+
+				<p style="text-align: center">
+					<a href="https://www.dogsclub.com.br/consultoria" class="button"
+						>Agendar Consultoria Gratuita</a
+					>
+				</p>
+
+				<p>
+					Se tiver dúvidas ou precisar de ajuda para implementar as
+					recomendações, nossa equipe de especialistas está à disposição para
+					auxiliá-lo.
+				</p>
+
+				<p>
+					Atenciosamente,<br />
+					Equipe Dog's Club
+				</p>
+			</div>
+
+			<div class="footer">
+				<div class="social-icons">
+					<a href="https://www.facebook.com/dogsclub"
+						><img
+							src="https://dogs-club-source.s3.us-east-1.amazonaws.com/facebook-icon.png"
+							alt="Facebook"
+					/></a>
+					<a href="https://www.instagram.com/dogsclub"
+						><img
+							src="https://dogs-club-source.s3.us-east-1.amazonaws.com/instagram-icon.png"
+							alt="Instagram"
+					/></a>
+					<a href="https://www.linkedin.com/company/dogsclub"
+						><img
+							src="https://dogs-club-source.s3.us-east-1.amazonaws.com/linkedin-icon.png"
+							alt="LinkedIn"
+					/></a>
+				</div>
+				<p>© 2025 Dog's Club. Todos os direitos reservados.</p>
+				<p>Rua Exemplo, 123 - São Paulo, SP - Brasil</p>
+				<p>
+					<a href="https://www.dogsclub.com.br/termos">Termos de Uso</a> |
+					<a href="https://www.dogsclub.com.br/privacidade"
+						>Política de Privacidade</a
+					>
+				</p>
+			</div>
+		</div>
+	</body>
+</html>

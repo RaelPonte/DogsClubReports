@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Recebemos sua Mensagem - Dog's Club</title>
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				line-height: 1.6;
+				color: #333;
+				margin: 0;
+				padding: 0;
+				background-color: #f9f9f9;
+			}
+			.container {
+				max-width: 600px;
+				margin: 0 auto;
+				padding: 20px;
+				background-color: #fff;
+				border-radius: 8px;
+				box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+			}
+			.header {
+				text-align: center;
+				padding-bottom: 20px;
+				border-bottom: 1px solid #eee;
+			}
+			.logo {
+				max-width: 180px;
+				margin: 0 auto 15px;
+				display: block;
+			}
+			h1 {
+				color: #3498db;
+				font-size: 24px;
+				margin: 0 0 10px;
+			}
+			.content {
+				padding: 20px 0;
+			}
+			.confirmation-box {
+				background-color: #e8f4fd;
+				border-left: 4px solid #3498db;
+				padding: 15px;
+				margin: 20px 0;
+				border-radius: 4px;
+			}
+			.confirmation-box h3 {
+				color: #3498db;
+				margin-top: 0;
+			}
+			.footer {
+				margin-top: 30px;
+				text-align: center;
+				font-size: 12px;
+				color: #777;
+				border-top: 1px solid #eee;
+				padding-top: 20px;
+			}
+			@media (max-width: 600px) {
+				.container {
+					width: 100%;
+					border-radius: 0;
+					box-shadow: none;
+				}
+				h1 {
+					font-size: 22px;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="header">
+				<img
+					src="https://dogs-club-source.s3.us-east-1.amazonaws.com/logo.png"
+					alt="Dog's Club Logo"
+					class="logo"
+				/>
+				<h1>Recebemos sua Mensagem</h1>
+			</div>
+
+			<div class="content">
+				<p>Olá, {{nome}}!</p>
+
+				<p>Agradecemos por entrar em contato com a Dog's Club.</p>
+
+				<div class="confirmation-box">
+					<h3>✅ Sua mensagem foi recebida com sucesso!</h3>
+					<p>
+						Nossa equipe entrará em contato dentro de
+						<strong>24 horas</strong> para auxiliá-lo(a).
+					</p>
+				</div>
+
+				<p><strong>Resumo da sua solicitação:</strong></p>
+				<ul>
+					<li><strong>Nome:</strong> {{nome}}</li>
+					<li><strong>E-mail:</strong> {{email}}</li>
+					<li><strong>Petshop:</strong> {{petshop_name}}</li>
+					<li><strong>Data:</strong> {{data}}</li>
+					<li><strong>Mensagem:</strong> "{{mensagem}}"</li>
+				</ul>
+
+				<p>
+					Se tiver alguma informação adicional que deseja compartilhar, basta
+					responder a este e-mail.
+				</p>
+
+				<p>
+					Atenciosamente,<br />
+					Equipe de Atendimento<br />
+					Dog's Club
+				</p>
+			</div>
+
+			<div class="footer">
+				<p>© 2025 Dog's Club. Todos os direitos reservados.</p>
+				<p>
+					<a href="https://www.dogsclub.com.br/termos">Termos de Uso</a> |
+					<a href="https://www.dogsclub.com.br/privacidade"
+						>Política de Privacidade</a
+					>
+				</p>
+			</div>
+		</div>
+	</body>
+</html>

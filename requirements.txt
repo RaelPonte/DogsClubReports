@@ -2,3 +2,10 @@ pandas
 matplotlib
 numpy
 pydantic
+reportlab
+streamlit
+boto3
+python-dateutil
+pillow
+pytz
+python-dotenv

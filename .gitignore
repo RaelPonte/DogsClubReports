@@ -1,0 +1,143 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.env
+.env
+# Diretórios de cache
+.pytest_cache/
+.tox/
+.nox/
+.eggs/
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Arquivos de configuração do IDE
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Arquivos de log
+*.log
+
+# Arquivos de coverage
+.coverage
+*.cover
+*.py,cover
+.hypothesis/
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.coveragerc
+
+# Arquivos de teste
+test-results/
+
+# Arquivos de saída do MyPy
+.mypy_cache/
+.dmypy.json
+
+# Arquivos de linter e formatação
+.pyre/
+.pytype/
+.pylint.d/
+
+# Arquivos temporários do sistema
+.DS_Store
+Thumbs.db
+
+# Pipenv, Poetry, e outras dependências geradas
+Pipfile.lock
+poetry.lock
+
+*.tfstate
+*.tfstate.backup
+
+# Ignore all files in the .terraform directory
+*/.terraform/*
+# --- Terraform ---
+*.tfstate
+*.tfstate.*
+crash.log
+*.tfvars
+*.tfvars.json
+*.tfplan
+.terraform/
+.terraform.lock.hcl
+
+# --- Python ---
+# Byte-compiled files
+*.pyc
+*.pyo
+__pycache__/
+
+# Virtual environment
+venv/
+.env/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Pytest cache
+.pytest_cache/
+
+# Logs
+*.log
+
+# IDE Configurations
+.vscode/
+.idea/
+# Ignore zip files
+*.zip
+
+# Ignore other archive types (e.g., tar, gz)
+*.tar
+*.tar.gz
+*.tar.bz2
+*.tgz
+
+# Ignore log files
+*.log
+
+# Ignore temporary files from editors and IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*.bak
+*.tmp
+
+# Ignore system files (macOS, Linux, Windows)
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Ignore compiled files
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore virtual environment directories
+venv/
+env/
+.venv/
+
+# Ignore deployment files
+*.tgz
+*.tar.gz
+*.tar.bz2
+=
+.terraform.lock.hcl
