@@ -3,6 +3,7 @@ from common.utils import get_timestamp
 from typing import Dict, Any
 from boto3.dynamodb.conditions import Key, Attr
 from boto3.dynamodb.types import TypeDeserializer
+import os
 
 from common.enums import EntityStatus, FilterOperator
 from typing import Optional, Dict, Union, List, Tuple
@@ -10,7 +11,24 @@ from typing import Optional, Dict, Union, List, Tuple
 
 class DynamoDBHandler:
     def __init__(self, table: str) -> None:
-        self.dynamodb = boto3.resource("dynamodb")
+        """
+        Inicializa o handler do DynamoDB.
+
+        Args:
+            table: Nome da tabela do DynamoDB
+        """
+        # Obter credenciais AWS das variáveis de ambiente
+        aws_access_key_id = os.getenv("AWS_ACCESS_KEY_ID")
+        aws_secret_access_key = os.getenv("AWS_SECRET_ACCESS_KEY")
+        region_name = os.getenv("AWS_REGION")
+
+        # Configurar o recurso DynamoDB com as credenciais e região
+        self.dynamodb = boto3.resource(
+            "dynamodb",
+            region_name=region_name,
+            aws_access_key_id=aws_access_key_id,
+            aws_secret_access_key=aws_secret_access_key,
+        )
         self.table = self.dynamodb.Table(table)
 
     def put_item(self, item: Dict):
